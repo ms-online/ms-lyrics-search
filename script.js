@@ -73,6 +73,17 @@ async function getMoreSongs(url) {
   showData(data);
 }
 
+// 获取歌词
+async function getLyrics(artist, songTitle) {
+  const res = await fetch(`${apiURL}/v1/${artist}/${songTitle}`);
+  const data = await res.json();
+
+  const lyrics = data.lyrics.replace(/(\r\n|\r|\n)/g, "<br>");
+  result.innerHTML = `<h2><strong>${artist}</strong> - ${songTitle}</h2> <span>${lyrics}</span>`;
+
+  more.innerHTML = "";
+}
+
 // 事件监听
 form.addEventListener("submit", e => {
   e.preventDefault();
@@ -83,5 +94,16 @@ form.addEventListener("submit", e => {
     alert("请输入查询内容");
   } else {
     searchSongs(searchTerm);
+  }
+});
+
+// 点击btn获得歌词
+result.addEventListener("click", e => {
+  const clickedEl = e.target;
+  if (clickedEl.tagName === "BUTTON") {
+    const artist = clickedEl.getAttribute("data-artist");
+    const songTitle = clickedEl.getAttribute("data-songtitle");
+
+    getLyrics(artist, songTitle);
   }
 });
